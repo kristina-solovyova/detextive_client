@@ -1,0 +1,22 @@
+@nav-text-color: #fff;
+@nav-text-active-color: #fff;
+
+.row {
+  margin: 0;
+  padding: 0;
+}
+.action-card {
+  margin-top: 10px;
+}
+
+a {
+  color: @nav-text-color;
+
+  &.router-link-exact-active {
+    color: @nav-text-active-color;
+  }
+  &:hover {
+    text-decoration: none;
+    color: @nav-text-active-color;
+  }
+}
