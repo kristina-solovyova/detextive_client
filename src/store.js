@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import router from "./router";
 
 import axios from "axios";
 import VueAxios from "vue-axios";
@@ -16,6 +17,11 @@ export default new Vuex.Store({
     jwt: localStorage.getItem("token"),
     authErrors: [],
     errors: []
+  },
+  getters: {
+    doneJWT: state => {
+      return state.jwt;
+    }
   },
   mutations: {
     updateToken(state, newToken) {
@@ -53,6 +59,7 @@ export default new Vuex.Store({
         const response = await AuthService.getJWTToken(credentials);
         commit("updateToken", response.data.token);
         dispatch("updateAuthData");
+        dispatch("redirectToResults");
       } catch (error) {
         commit("setAuthErrors", error.response.data);
       }
@@ -63,9 +70,18 @@ export default new Vuex.Store({
       commit("setAuthErrors", []); // clear auth errors
     },
 
-    removeToken({ commit }) {
+    removeToken({ commit, dispatch }) {
       commit("removeToken");
       commit("updateCurrentUser");
+      dispatch("redirectToLogin");
+    },
+
+    redirectToLogin() {
+      router.push({ name: "Login" });
+    },
+
+    redirectToResults() {
+      router.push({ name: "Results" });
     },
 
     async refreshToken({ commit, dispatch, state }) {
@@ -76,27 +92,8 @@ export default new Vuex.Store({
         commit("updateToken", response.data.token);
         dispatch("updateAuthData");
       } catch (error) {
+        dispatch("removeToken");
         commit("setAuthErrors", error.response.data);
-      }
-    },
-
-    inspectToken({ dispatch, state }) {
-      if (state.jwt) {
-        const decoded = jwt_decode(state.jwt);
-        const exp = decoded.exp;
-        const orig_iat = decoded.orig_iat;
-
-        if (
-          exp - Date.now() / 1000 < 1800 &&
-          Date.now() / 1000 - orig_iat < 628200
-        ) {
-          dispatch("refreshToken");
-        } else if (exp - Date.now() / 1000 < 1800) {
-          // DO NOTHING, DO NOT REFRESH
-        } else {
-          // PROMPT USER TO RE-LOGIN, THIS ELSE CLAUSE COVERS THE CONDITION WHERE A TOKEN IS EXPIRED AS WELL
-          dispatch("removeToken");
-        }
       }
     }
   }

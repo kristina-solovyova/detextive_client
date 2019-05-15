@@ -6,7 +6,7 @@
           <form @submit.prevent="logIn">
             <p class="h4 text-center mb-4">Sign in</p>
             <div class="grey-text">
-              <mdb-input v-model="user.username" label="Your email" icon="envelope" type="text" />
+              <mdb-input v-model="user.username" label="Your username" icon="user" type="text" />
               <mdb-input v-model="user.password" label="Your password" icon="lock" type="password" />
             </div>
             <div class="text-center">
@@ -44,9 +44,6 @@ export default {
   methods: {
     async logIn() {
       await this.$store.dispatch("obtainToken", this.user);
-      if (this.$store.state.authErrors.length === 0) {
-        this.$router.push("/");
-      }
     }
   }
 };

@@ -6,10 +6,19 @@ const URL = process.env.VUE_APP_SERVER_URL;
 const http = axios.create({
   baseURL: URL + "/api",
   headers: {
-    "Content-Type": "multipart/form-data",
-    Authorization: "Bearer " + localStorage.getItem("token")
+    "Content-Type": "multipart/form-data"
   }
 });
+
+http.interceptors.request.use(
+  config => {
+    config.headers.Authorization = "Bearer " + localStorage.getItem("token");
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
 
 export default {
   loadImage(body) {

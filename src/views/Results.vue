@@ -35,8 +35,12 @@ export default {
   },
   methods: {
     async getResults() {
-      const response = await ResultsService.resultsList();
-      this.results = response.data.results;
+      try {
+        const response = await ResultsService.resultsList();
+        this.results = response.data.results;
+      } catch (err) {
+        console.log(err.message);
+      }
     },
     viewResult(id) {
       this.$router.push({ name: "ResultDetail", params: { id } });
