@@ -19,7 +19,7 @@ export default new Vuex.Store({
     errors: []
   },
   getters: {
-    doneJWT: state => {
+    getJWT: state => {
       return state.jwt;
     }
   },

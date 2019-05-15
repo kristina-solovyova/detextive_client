@@ -6,7 +6,7 @@
     <hr class="mb-5" />
     <mdb-row>
       <div class="card-deck">
-        <div class="card result-card" v-for="(result, index) in results" :key="index">
+        <div class="card result-card" v-for="(result, index) in results" :key="index" @click="viewResult(result.id)">
           <img :src="imageBaseUrl + result.image_url" class="card-img-top result-image" alt="Processed image">
           <div class="card-body">
             <p class="card-text result-text">{{ result.text }}</p>
@@ -44,11 +44,6 @@ export default {
     },
     viewResult(id) {
       this.$router.push({ name: "ResultDetail", params: { id } });
-    },
-    async deleteResult(id, index) {
-      const response = await ResultsService.deleteResult(id);
-      this.message = response.data.message;
-      this.results.splice(index, 1);
     }
   },
   mounted() {

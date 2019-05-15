@@ -7,11 +7,11 @@ export default {
     return api().get(RESULTS);
   },
 
-  getResult(body) {
-    return api().post(RESULTS, body);
+  getResult(id) {
+    return api().get(RESULTS + id);
   },
 
   deleteResult(id) {
-    return api().delete(RESULTS + id + "/delete");
+    return api().delete(RESULTS + id);
   }
 };
