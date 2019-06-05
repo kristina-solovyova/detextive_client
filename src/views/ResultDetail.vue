@@ -5,7 +5,7 @@
     </h2>
     <mdb-row class="mt-5">
       <mdb-col lg="5" class="mb-lg-0 mb-5">
-        <img :src="imageBaseUrl + result.image_url" alt="Processed image" class="img-fluid rounded z-depth-1" />
+        <img :src="result.image_url" alt="Processed image" class="img-fluid rounded z-depth-1" />
       </mdb-col>
       <mdb-col lg="7">
         <mdb-row class="mb-3">
@@ -23,7 +23,15 @@
           </mdb-col>
           <mdb-col md="11" size="10">
             <h5 class="font-weight-bold mb-3">Text found</h5>
-            <p class="grey-text">{{ result.text }}</p>
+            <p ref="resultText" class="grey-text">{{ result.text }}</p>
+          </mdb-col>
+        </mdb-row>
+        <mdb-row class="mb-5">
+          <mdb-col md="1" size="2">
+            <mdb-icon icon="copy" size="2x" class="deep-purple-text" />
+          </mdb-col>
+          <mdb-col md="11" size="10">
+            <a><h5 class="font-weight-bold mb-3" @click="copyText">{{ copyMessage }}</h5></a>
           </mdb-col>
         </mdb-row>
         <mdb-row class="mt-3">
@@ -72,13 +80,21 @@ export default {
   data() {
     return {
       modal: false,
-      imageBaseUrl: process.env.VUE_APP_SERVER_URL,
       result: {
         image_url: "",
         datetime: null,
         text: ""
-      }
+      },
+      copied: false
     };
+  },
+  computed: {
+    copyMessage() {
+      if (!this.copied) {
+        return "Copy to clipboard";
+      }
+      return "Copied!";
+    }
   },
   methods: {
     async getResult() {
@@ -100,6 +116,25 @@ export default {
     },
     goBack() {
       this.$router.push({ name: "Results" });
+    },
+    selectText(element) {
+      let range;
+      if (document.selection) {
+        // IE
+        range = document.body.createTextRange();
+        range.moveToElementText(element);
+        range.select();
+      } else if (window.getSelection) {
+        range = document.createRange();
+        range.selectNode(element);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+      }
+    },
+    copyText() {
+      this.selectText(this.$refs.resultText);
+      document.execCommand("copy");
+      this.copied = true;
     }
   },
   mounted() {
