@@ -5,7 +5,7 @@
     </h2>
     <mdb-row class="mt-5">
       <mdb-col lg="5" class="mb-lg-0 mb-5">
-        <img :src="imageBaseUrl + result.image_url" alt="Processed image" class="img-fluid rounded z-depth-1" />
+        <img :src="result.image_url" alt="Processed image" class="img-fluid rounded z-depth-1" />
       </mdb-col>
       <mdb-col lg="7">
         <mdb-row class="mb-3">
@@ -80,7 +80,6 @@ export default {
   data() {
     return {
       modal: false,
-      imageBaseUrl: process.env.VUE_APP_SERVER_URL,
       result: {
         image_url: "",
         datetime: null,

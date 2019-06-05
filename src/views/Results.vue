@@ -5,9 +5,10 @@
     </mdb-row>
     <hr class="mb-5" />
     <mdb-row>
+      <p v-show="!results.length">No results yet, try to load image.</p>
       <div class="card-deck">
         <div class="card result-card" v-for="(result, index) in results" :key="index" @click="viewResult(result.id)">
-          <img :src="imageBaseUrl + result.image_url" class="card-img-top result-image" alt="Processed image">
+          <img :src="result.image_url" class="card-img-top result-image" alt="Processed image">
           <div class="card-body">
             <p class="card-text result-text">{{ result.text }}</p>
             <p class="card-text"><small class="text-muted">{{ new Date(result.datetime).toLocaleString() }}</small></p>
@@ -29,7 +30,6 @@ export default {
   },
   data() {
     return {
-      imageBaseUrl: process.env.VUE_APP_SERVER_URL,
       results: []
     };
   },
