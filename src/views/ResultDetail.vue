@@ -5,7 +5,7 @@
     </h2>
     <mdb-row class="mt-5">
       <mdb-col lg="5" class="mb-lg-0 mb-5">
-        <img :src="result.image_url" alt="Processed image" class="img-fluid rounded z-depth-1" />
+        <canvas id="cnv" class="img-fluid rounded z-depth-1"></canvas>
       </mdb-col>
       <mdb-col lg="7">
         <mdb-row class="mb-3">
@@ -83,7 +83,8 @@ export default {
       result: {
         image_url: "",
         datetime: null,
-        text: ""
+        text: "",
+        text_positions: []
       },
       copied: false
     };
@@ -135,10 +136,49 @@ export default {
       this.selectText(this.$refs.resultText);
       document.execCommand("copy");
       this.copied = true;
+    },
+    setCanvas() {
+      const canvas = document.getElementById("cnv");
+      const context = canvas.getContext("2d");
+      const img = new Image();
+
+      img.src = this.result.image_url;
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        context.drawImage(img, 0, 0);
+        this.drawBoundingBoxes(context);
+      };
+    },
+    drawBoundingBoxes(ctx) {
+      for (let i = 0; i < this.result.text_positions.length; i++) {
+        let tp = this.result.text_positions[i];
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "lime";
+        this.drawRotatedRect(ctx, tp.x, tp.y, tp.width, tp.height, -tp.angle);
+        // ctx.beginPath();
+        // ctx.moveTo(tp.x, tp.y);
+        // ctx.lineTo(tp.x, tp.y + tp.height);
+        // ctx.lineTo(tp.x + tp.width, tp.y + tp.height);
+        // ctx.lineTo(tp.x + tp.width, tp.y);
+        // ctx.closePath();
+        // ctx.stroke();
+      }
+    },
+    drawRotatedRect(ctx, x, y, width, height, degrees) {
+      // first save the untranslated/unrotated context
+      ctx.save();
+      ctx.beginPath();
+      ctx.translate(x + width / 2, y + height / 2);
+      ctx.rotate((degrees * Math.PI) / 180);
+      ctx.rect(-width / 2, -height / 2, width, height);
+      ctx.stroke();
+      ctx.restore();
     }
   },
-  mounted() {
-    this.getResult();
+  async mounted() {
+    await this.getResult();
+    this.setCanvas();
   }
 };
 </script>
