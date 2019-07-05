@@ -36,8 +36,8 @@
         <div class="processed">
           <div class="processed-content">
             <div>
-              <span v-if="processing">߷</span>
-              <span v-else-if="result">{{ result.text }}</span>
+              <clip-loader v-if="processing" class="into" name="spinner" size="70px"></clip-loader>
+              <span class="into" v-else-if="result">{{ result.text }}</span>
             </div>
           </div>
         </div>
@@ -49,6 +49,7 @@
 <script>
 import { mdbContainer, mdbRow, mdbCol, mdbBtn, mdbIcon } from "mdbvue";
 import PictureInput from "vue-picture-input";
+import ClipLoader from "vue-spinner/src/ClipLoader.vue";
 import ImageService from "@/services/ImageService";
 export default {
   name: "LoadImage",
@@ -58,7 +59,8 @@ export default {
     mdbCol,
     mdbBtn,
     mdbIcon,
-    PictureInput
+    PictureInput,
+    ClipLoader
   },
   data() {
     return {
@@ -141,7 +143,7 @@ export default {
   width: 100%;
   height: 100%;
 }
-.processed-content span {
+.processed-content .into {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
