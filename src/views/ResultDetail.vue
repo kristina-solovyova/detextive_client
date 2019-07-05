@@ -23,7 +23,7 @@
           </mdb-col>
           <mdb-col md="11" size="10">
             <h5 class="font-weight-bold mb-3">Text found</h5>
-            <p ref="resultText" class="grey-text">{{ result.text }}</p>
+            <p ref="resultText" class="font-weight-bold">{{ result.text }}</p>
           </mdb-col>
         </mdb-row>
         <mdb-row class="mb-5">

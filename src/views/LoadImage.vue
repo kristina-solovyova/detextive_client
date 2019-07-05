@@ -68,7 +68,11 @@ export default {
       processing: false,
       result: null,
       errors: [],
-      loaded: null
+      loaded: null,
+      timer: null,
+      state: "",
+      task_id: null,
+      result_id: null
     };
   },
   methods: {
@@ -82,8 +86,6 @@ export default {
         this.loaded = response.data;
       } catch (error) {
         this.errors = error.response.data;
-      } finally {
-        this.processing = false;
       }
     },
     async processImage() {
@@ -97,10 +99,23 @@ export default {
         const response = await ImageService.processImage({
           image_id: this.loaded.id
         });
-        this.result = response.data;
+        this.task_id = response.data.task_id;
+        this.result_id = response.data.result_id;
+        this.getProgress();
       } catch (err) {
         this.errors = err.response.data;
       }
+    },
+    getProgress() {
+      this.timer = setInterval(async () => {
+        const response = await ImageService.getProgress(this.task_id);
+        this.state = response.data.state;
+
+        if (this.state !== "PROGRESS") {
+          clearInterval(this.timer);
+          this.$router.push({ name: "ResultDetail", params: { id: this.result_id } });
+        }
+      }, 4000);
     },
     onChange() {
       if (this.$refs.pictureInput.file) {

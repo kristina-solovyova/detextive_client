@@ -27,5 +27,11 @@ export default {
 
   processImage(body) {
     return api().post("process-image", body);
+  },
+
+  getProgress(task_id) {
+    return api().get("get-progress", {
+      params: { task_id }
+    });
   }
 };
